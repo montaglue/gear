@@ -681,6 +681,7 @@ fn run<E: Environment<Ext>>(
     };
 
     let memory = env.create_memory(program.static_pages());
+    // let memory = env.create_memory(1);
 
     // Charge gas for feature memory grows.
     let max_page = program.get_pages().iter().next_back();

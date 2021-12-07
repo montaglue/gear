@@ -1136,7 +1136,7 @@ checksum = "c19772be3c4dd2ceaacf03cb41d5885f2a02c4d8804884918e3a258480803335"
 [[package]]
 name = "sp-core"
 version = "4.0.0-dev"
-source = "git+https://github.com/gear-tech/substrate.git?branch=gear-stable#a912c13fbcb1f6f234fa3d458f60ee9d0e46f2c2"
+source = "git+https://github.com/gear-tech/substrate.git?branch=gsobol#a912c13fbcb1f6f234fa3d458f60ee9d0e46f2c2"
 dependencies = [
  "blake2-rfc",
  "byteorder",
@@ -1167,7 +1167,7 @@ dependencies = [
 [[package]]
 name = "sp-debug-derive"
 version = "3.0.0"
-source = "git+https://github.com/gear-tech/substrate.git?branch=gear-stable#a912c13fbcb1f6f234fa3d458f60ee9d0e46f2c2"
+source = "git+https://github.com/gear-tech/substrate.git?branch=gsobol#a912c13fbcb1f6f234fa3d458f60ee9d0e46f2c2"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -1177,7 +1177,7 @@ dependencies = [
 [[package]]
 name = "sp-runtime-interface"
 version = "4.0.0-dev"
-source = "git+https://github.com/gear-tech/substrate.git?branch=gear-stable#a912c13fbcb1f6f234fa3d458f60ee9d0e46f2c2"
+source = "git+https://github.com/gear-tech/substrate.git?branch=gsobol#a912c13fbcb1f6f234fa3d458f60ee9d0e46f2c2"
 dependencies = [
  "impl-trait-for-tuples",
  "parity-scale-codec",
@@ -1193,7 +1193,7 @@ dependencies = [
 [[package]]
 name = "sp-runtime-interface-proc-macro"
 version = "4.0.0-dev"
-source = "git+https://github.com/gear-tech/substrate.git?branch=gear-stable#a912c13fbcb1f6f234fa3d458f60ee9d0e46f2c2"
+source = "git+https://github.com/gear-tech/substrate.git?branch=gsobol#a912c13fbcb1f6f234fa3d458f60ee9d0e46f2c2"
 dependencies = [
  "Inflector",
  "proc-macro-crate",
@@ -1205,12 +1205,12 @@ dependencies = [
 [[package]]
 name = "sp-std"
 version = "4.0.0-dev"
-source = "git+https://github.com/gear-tech/substrate.git?branch=gear-stable#a912c13fbcb1f6f234fa3d458f60ee9d0e46f2c2"
+source = "git+https://github.com/gear-tech/substrate.git?branch=gsobol#a912c13fbcb1f6f234fa3d458f60ee9d0e46f2c2"
 
 [[package]]
 name = "sp-storage"
 version = "4.0.0-dev"
-source = "git+https://github.com/gear-tech/substrate.git?branch=gear-stable#a912c13fbcb1f6f234fa3d458f60ee9d0e46f2c2"
+source = "git+https://github.com/gear-tech/substrate.git?branch=gsobol#a912c13fbcb1f6f234fa3d458f60ee9d0e46f2c2"
 dependencies = [
  "parity-scale-codec",
  "ref-cast",
@@ -1221,7 +1221,7 @@ dependencies = [
 [[package]]
 name = "sp-tracing"
 version = "4.0.0-dev"
-source = "git+https://github.com/gear-tech/substrate.git?branch=gear-stable#a912c13fbcb1f6f234fa3d458f60ee9d0e46f2c2"
+source = "git+https://github.com/gear-tech/substrate.git?branch=gsobol#a912c13fbcb1f6f234fa3d458f60ee9d0e46f2c2"
 dependencies = [
  "parity-scale-codec",
  "sp-std",
@@ -1232,7 +1232,7 @@ dependencies = [
 [[package]]
 name = "sp-wasm-interface"
 version = "4.0.0-dev"
-source = "git+https://github.com/gear-tech/substrate.git?branch=gear-stable#a912c13fbcb1f6f234fa3d458f60ee9d0e46f2c2"
+source = "git+https://github.com/gear-tech/substrate.git?branch=gsobol#a912c13fbcb1f6f234fa3d458f60ee9d0e46f2c2"
 dependencies = [
  "impl-trait-for-tuples",
  "parity-scale-codec",

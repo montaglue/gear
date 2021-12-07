@@ -22,13 +22,13 @@ gear-backend-common = { path = "../core-backend/common", default-features = fals
 gear-common = { path = "../common", default-features = false }
 
 # Substrate deps
-sp-core = { version = "4.0.0-dev", git = "https://github.com/gear-tech/substrate.git", branch = "gear-stable", default-features = false }
-sp-io = { version = "4.0.0-dev", git = "https://github.com/gear-tech/substrate.git", branch = "gear-stable", default-features = false }
-sp-std = { version = "4.0.0-dev", git = "https://github.com/gear-tech/substrate.git", branch = "gear-stable", default-features = false }
+sp-core = { version = "4.0.0-dev", git = "https://github.com/gear-tech/substrate.git", branch = "gsobol", default-features = false }
+sp-io = { version = "4.0.0-dev", git = "https://github.com/gear-tech/substrate.git", branch = "gsobol", default-features = false }
+sp-std = { version = "4.0.0-dev", git = "https://github.com/gear-tech/substrate.git", branch = "gsobol", default-features = false }
 
 [dev-dependencies]
 gear-runtime = { path = "../runtime" }
-frame-system = { version = "4.0.0-dev", git = "https://github.com/gear-tech/substrate.git", branch = "gear-stable" }
+frame-system = { version = "4.0.0-dev", git = "https://github.com/gear-tech/substrate.git", branch = "gsobol" }
 wabt = "0.10"
 
 [features]

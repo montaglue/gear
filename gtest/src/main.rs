@@ -25,6 +25,12 @@ mod sample;
 use clap::Parser;
 use gear_core::storage::InMemoryStorage;
 
+extern crate libc;
+use libc::{c_void, siginfo_t};
+extern crate nix;
+
+use nix::sys::signal;
+
 #[derive(Parser)]
 struct Opts {
     /// Skip messages checks
@@ -43,7 +49,20 @@ struct Opts {
     verbose: i32,
 }
 
+extern fn handle_sigsegv(x: i32, y: *mut siginfo_t, z: *mut c_void) {
+    println!("Interrupted! {}", x);
+    return;
+}
+
 pub fn main() -> anyhow::Result<()> {
+    unsafe {
+        let x = signal::SigHandler::SigAction(handle_sigsegv);
+        let sig_action = signal::SigAction::new( x,
+                                                 signal::SaFlags::SA_SIGINFO,
+                                                 signal::SigSet::empty());
+        let _x = signal::sigaction(signal::SIGSEGV, &sig_action);
+    }
+
     let opts: Opts = Opts::parse();
     let print_logs = !matches!(opts.verbose, 0);
     check::check_main::<InMemoryStorage, _>(

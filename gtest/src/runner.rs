@@ -36,7 +36,8 @@ use std::time::{SystemTime, UNIX_EPOCH};
 
 use regex::Regex;
 
-type WasmRunner<SC> = Runner<SC, gear_backend_wasmtime::WasmtimeEnvironment<Ext>>;
+// type WasmRunner<SC> = Runner<SC, gear_backend_wasmtime::WasmtimeEnvironment<Ext>>;
+type WasmRunner<SC> = Runner<SC, gear_backend_sandbox::SandboxEnvironment<Ext>>;
 
 fn encode_hex(bytes: &[u8]) -> String {
     let mut s = String::with_capacity(bytes.len() * 2);
@@ -131,7 +132,8 @@ pub fn init_fixture<SC: StorageCarrier>(
         &Config::default(),
         storage,
         Default::default(),
-        gear_backend_wasmtime::WasmtimeEnvironment::<Ext>::default(),
+        // gear_backend_wasmtime::WasmtimeEnvironment::<Ext>::default(),
+        gear_backend_sandbox::SandboxEnvironment::<Ext>::default(),
     );
     let mut messages = Vec::new();
     let mut log = vec![];

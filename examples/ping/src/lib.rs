@@ -12,6 +12,10 @@ pub unsafe extern "C" fn handle() {
         msg::reply_bytes("PONG", 12_000_000, 0);
     }
 
+    unsafe {
+        *(0x130000 as *mut u8) = 10;
+    }
+
     MESSAGE_LOG.push(new_msg);
 
     debug!("{:?} total message(s) stored: ", MESSAGE_LOG.len());
