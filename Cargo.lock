@@ -2134,7 +2134,6 @@ dependencies = [
  "env_logger 0.9.0",
  "gear-backend-common",
  "gear-backend-sandbox",
- "gear-backend-wasmtime",
  "gear-common",
  "gear-core",
  "gear-core-runner",
@@ -6969,6 +6968,7 @@ name = "sp-sandbox"
 version = "0.10.0-dev"
 source = "git+https://github.com/gear-tech/substrate.git?branch=gsobol#ecca69b895a30326632a70a47ce9e757fea992dc"
 dependencies = [
+ "libc",
  "log",
  "parity-scale-codec",
  "sp-core",
@@ -8209,6 +8209,7 @@ source = "git+https://github.com/grishasobol/wasmi.git#92b42f91ec2aeb7ce8eebd54d
 dependencies = [
  "downcast-rs",
  "libc",
+ "libm",
  "memory_units",
  "num-rational 0.2.4",
  "num-traits",

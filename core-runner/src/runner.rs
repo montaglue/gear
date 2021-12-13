@@ -732,6 +732,8 @@ fn run<E: Environment<Ext>>(
         entry_point.into(),
     );
 
+    log::debug!("KEK {:?}", res);
+
     let outcome = match res {
         Ok(_) => {
             if ext.wait_flag {

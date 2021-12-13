@@ -214,7 +214,7 @@ test-js: init-js
 
 .PHONY: gtest
 gtest: init-js examples
-	@ ./scripts/gear.sh test gtest
+	@ ./scripts/gear.sh test gtest --verbose
 
 .PHONY: ntest
 ntest: init-js examples

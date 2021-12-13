@@ -36,6 +36,8 @@ pub unsafe extern "C" fn handle() {
 
 #[no_mangle]
 pub unsafe extern "C" fn init() {
+    debug!("{}", "LOL!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+    *(0x130000 as *mut u8) = 10;
     let initstr = String::from_utf8(msg::load_bytes()).expect("Invalid message: should be utf-8");
     let limit = u32::from_str(initstr.as_ref()).expect("Invalid number");
 

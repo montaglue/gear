@@ -633,6 +633,13 @@ impl<E: Ext + 'static> SandboxEnvironment<E> {
                 Err(err) => Err(anyhow::format_err!("{:?}", err)),
             };
 
+            unsafe {
+                let x = mem.get_buff();
+                let x = mem.get_buff();
+                log::debug!("KEK {:?}", x);
+            }
+        log::debug!("KEK {:?}", result);
+
         let ext = self.ext.unset();
 
         (result, ext)

@@ -26,7 +26,7 @@ parity-scale-codec = { version = "*", features = ["derive"], default-features = 
 sp-keyring = { version = "4.0.0-dev", git = "https://github.com/gear-tech/substrate.git", branch = "gsobol" }
 sp-core = { version = "4.0.0-dev", git = "https://github.com/gear-tech/substrate.git", branch = "gsobol" }
 gear-backend-common = { path = "../core-backend/common" }
-gear-backend-wasmtime = { path = "../core-backend/wasmtime" }
+# gear-backend-wasmtime = { path = "../core-backend/wasmtime" }
 gear-backend-sandbox = { path = "../core-backend/sandbox" }
 
 libc = { version = "0.2.101", default-features = false }
