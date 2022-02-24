@@ -1335,7 +1335,7 @@ dependencies = [
 [[package]]
 name = "dlmalloc"
 version = "0.1.4"
-source = "git+https://github.com/gear-tech/dlmalloc-rust.git?rev=179400bb9edd6b80d9e7ef913bd3cdc95872cf50#179400bb9edd6b80d9e7ef913bd3cdc95872cf50"
+source = "git+https://github.com/gear-tech/dlmalloc-rust.git?rev=1a0f43df0bc2dd47d382a34a56f7ffc2b5a8bd7c#1a0f43df0bc2dd47d382a34a56f7ffc2b5a8bd7c"
 dependencies = [
  "libc",
  "libc_print",
