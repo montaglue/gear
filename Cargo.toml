@@ -22,7 +22,6 @@ members = [
     "core-backend/wasmtime",
     "core-backend/sandbox",
     "core-processor",
-    "galloc",
     "gcore",
     "gear-test",
     "gstd",
