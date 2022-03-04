@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["CodeHash","Blake2b hash of the program code."],["Program","Program."],["ProgramId","Program identifier."]]});
