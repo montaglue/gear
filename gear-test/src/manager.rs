@@ -76,16 +76,23 @@ impl CollectState for InMemoryExtManager {
             ..
         } = self.clone();
 
+        let (actors, terminated_actors) = actors
+            .into_iter()
+            .partition::<BTreeMap<_, _>, _>(|(_, a_opt)| a_opt.is_some());
+
         let actors = actors
             .into_iter()
             .filter_map(|(id, a_opt)| a_opt.map(|a| (id, a)))
             .collect();
+
+        let terminated_actors = Some(terminated_actors.into_iter().map(|(id, _)| id).collect::<Vec<_>>());
 
         State {
             dispatch_queue,
             log,
             actors,
             current_failed,
+            terminated_actors,
         }
     }
 }

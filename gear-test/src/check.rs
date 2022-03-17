@@ -17,10 +17,11 @@
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 use crate::js::{MetaData, MetaType};
-use crate::proc;
-use crate::sample::{self, AllocationExpectationKind, AllocationFilter, PayloadVariant, Test};
+use crate::{proc, yaml_update};
+use crate::sample::{self, AllocationExpectationKind, AllocationFilter, PayloadVariant, Test, OldTest};
 use anyhow::anyhow;
 use colored::{ColoredString, Colorize};
+use core_processor::common::ExecutableActor;
 use core_processor::{
     common::{CollectState, JournalHandler},
     Ext,
@@ -35,6 +36,7 @@ use gear_core::{
 };
 use log::{Log, Metadata, Record, SetLoggerError};
 use rayon::prelude::*;
+use std::collections::{BTreeMap, BTreeSet};
 use std::{
     collections::HashMap,
     fmt, fs,
@@ -421,27 +423,45 @@ pub fn check_memory(
         Err(errors)
     }
 }
-
+// make only flag
 fn check_active_programs(
-    expected_ids: Vec<ProgramId>,
-    actual_ids: Vec<ProgramId>,
+    expected_ids: Vec<(ProgramId, bool)>,
+    active_ids: &Vec<ProgramId>,
+    terminated_ids: &Vec<ProgramId>,
 ) -> Result<(), Vec<String>> {
     let mut errors = Vec::with_capacity(expected_ids.len());
-    if expected_ids.len() != actual_ids.len() {
+
+    if expected_ids.len() != active_ids.len() + terminated_ids.len() {
         errors.push(format!(
-            "invalid amount of active programs: expected - {:?}, actual - {:?}",
+            "invalid amount of active programs: expected - {:?}, active - {:?}, terminated - {:?}",
             expected_ids.len(),
-            actual_ids.len()
+            active_ids.len(),
+            terminated_ids.len(),
         ));
     } else {
-        let check_data = expected_ids.iter().zip(actual_ids.iter());
-        for (idx, (expected_id, actual_id)) in check_data.enumerate() {
-            if expected_id != actual_id {
-                errors.push(format!(
-                    "invalid program id at position {:?}. Expected - {:?}, actual - {:?}",
-                    idx, expected_id, actual_id
-                ));
+        let mut terminated_index = 0;
+        let mut active_index = 0;
+        for (idx, (expected_id, terminated)) in expected_ids.into_iter().enumerate() {
+            if terminated {
+                let actual_id = terminated_ids[terminated_index];
+                terminated_index += 1;
+                if expected_id != actual_id {
+                    errors.push(format!(
+                        "invalid program id at position {:?}. Expected - {:?}, actual - {:?}",
+                        idx, expected_id, actual_id
+                    ));
+                }
+            } else {
+                let actual_id = active_ids[active_index];
+                active_index += 1;
+                if expected_id != actual_id {
+                    errors.push(format!(
+                        "invalid program id at position {:?}. Expected - {:?}, actual - {:?}",
+                        idx, expected_id, actual_id
+                    ));
+                }
             }
+            
         }
     }
 
@@ -528,12 +548,12 @@ where
                 if let Some(programs) = &exp.active_programs {
                     let expected_prog_ids = programs
                         .iter()
-                        .map(|address| address.to_program_id())
+                        .map(|program| (program.to_program_id(), program.terminated()))
                         .collect();
-                    // Final state returns only active programs
                     let actual_prog_ids = final_state.actors.iter().map(|(id, _)| *id).collect();
+                    // Final state returns only active programs
                     if let Err(prog_id_errors) =
-                        check_active_programs(expected_prog_ids, actual_prog_ids)
+                        check_active_programs(expected_prog_ids, &actual_prog_ids, &final_state.terminated_actors.unwrap_or_default())
                     {
                         errors.push(format!("step: {:?}", exp.step));
                         errors.extend(
@@ -611,6 +631,10 @@ where
         println!("Logger err: {}", e);
     }
     let mut tests = Vec::new();
+
+    if let Err(e) = yaml_update::yaml_update(files.clone(), OldTest::to_new) {
+        println!("Logger err: {}", e);
+    }
 
     for path in files {
         if path.is_dir() {

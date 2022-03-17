@@ -32,6 +32,7 @@ fixtures:
             # computed manually new program address
             value: 5Fypuf8SCGzqtJy91VJqb17WgUbgVTC6k3Vb4yfj3VBj2at1
 
+
   - title: Try to re-init existing program
 
     messages:

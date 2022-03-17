@@ -281,7 +281,9 @@ pub struct State {
     /// Log records.
     pub log: Vec<Message>,
     /// State of each executable actor.
-    pub actors: BTreeMap<ProgramId, ExecutableActor>,
+    pub actors: BTreeMap<ProgramId, ExecutableActor>, // Option
+    /// Id of actors that already terminated
+    pub terminated_actors: Option<Vec<ProgramId>>,
     /// Is current state failed.
     pub current_failed: bool,
 }

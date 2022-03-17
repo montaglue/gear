@@ -22,6 +22,7 @@ mod js;
 mod manager;
 mod proc;
 mod sample;
+mod yaml_update;
 
 use clap::Parser;
 use core_processor::Ext;

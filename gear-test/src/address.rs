@@ -23,8 +23,39 @@ use sp_keyring::sr25519::Keyring;
 use std::str::FromStr;
 
 #[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
+pub struct Address {
+    value: String,
+}
+
+impl Default for Address {
+    fn default() -> Self {
+        Self {
+            value: "alice".to_string(),
+        }
+    }
+}
+
+impl Address {
+    pub fn to_program_id(&self) -> ProgramId {
+        if let Ok(h256) = H256::from_str(&self.value) {
+            return ProgramId::from(h256.as_bytes());
+        }
+        if let Ok(key) = Public::from_ss58check(&self.value) {
+            return ProgramId::from_slice(key.as_bytes_ref());
+        }
+        if let Ok(id) = self.value.parse::<u64>() {
+            return ProgramId::from(id);
+        }
+        ProgramId::from_slice(Keyring::from_str(&self.value)
+            .expect(format!("Failed to determine representation of program id {:?}", self.value).as_str())
+            .as_bytes_ref()
+        )
+    }
+}
+
+#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 #[serde(tag = "kind", content = "value")]
-pub enum Address {
+pub enum OldAddress {
     #[serde(rename = "account")]
     Account(String),
     #[serde(rename = "id")]
@@ -35,13 +66,13 @@ pub enum Address {
     H256(H256),
 }
 
-impl Default for Address {
+impl Default for OldAddress {
     fn default() -> Self {
         Self::Account("alice".to_string())
     }
 }
 
-impl Address {
+impl OldAddress {
     pub fn to_program_id(&self) -> ProgramId {
         match self {
             Self::Account(s) => ProgramId::from_slice(
@@ -59,6 +90,17 @@ impl Address {
             Self::H256(id) => ProgramId::from(id.as_bytes()),
         }
     }
+
+    pub fn to_new(self) -> Address {
+        Address {
+            value: match self {
+                Self::Account(s) => s,
+                Self::ProgramId(id) => id.to_string(),
+                Self::SS58(s) => s,
+                Self::H256(h256) => h256.to_string(),
+            },
+        }
+    }
 }
 
 #[derive(Serialize, Deserialize)]
@@ -72,7 +114,9 @@ impl From<UntaggedAddress> for Address {
     fn from(a: UntaggedAddress) -> Self {
         match a {
             UntaggedAddress::Address(s) => s,
-            UntaggedAddress::Integer(n) => Address::ProgramId(n),
+            UntaggedAddress::Integer(n) => Address {
+                value: n.to_string(),
+            },
         }
     }
 }

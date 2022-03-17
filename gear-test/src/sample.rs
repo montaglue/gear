@@ -20,10 +20,28 @@
 //!
 //! For now tests are defined in "yaml" format and parsed into models defined in the module by using [serde_yaml](https://docs.serde.rs/serde_yaml/index.html).
 
-use crate::address::{self, Address as ChainAddress};
+use crate::address::{self, OldAddress, Address as ChainAddress};
+use gear_core::program::ProgramId;
 use hex::FromHex;
 use serde::{de, Deserialize, Deserializer, Serialize};
 use serde_yaml::Value;
+
+
+#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
+pub struct ChainProgram {
+    address: ChainAddress, // parse without address word
+    terminated: Option<bool>
+}
+
+impl ChainProgram {
+    pub fn to_program_id(&self) -> ProgramId {
+        return self.address.to_program_id()
+    }
+    
+    pub fn terminated(&self) -> bool {
+        self.terminated.unwrap_or_default()
+    }
+}
 
 fn de_address<'de, D: Deserializer<'de>>(deserializer: D) -> Result<usize, D::Error> {
     Ok(match Value::deserialize(deserializer)? {
@@ -97,7 +115,30 @@ pub struct Expectation {
     pub allow_error: Option<bool>,
     /// Expected active programs (not failed in the init) ids
     #[serde(rename = "programs")]
-    pub active_programs: Option<Vec<ChainAddress>>,
+    pub active_programs: Option<Vec<ChainProgram>>,
+}
+
+#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
+pub struct OldExpectation {
+    /// Step number.
+    ///
+    /// By defining the field we control how many messaged does the test runner actually process.
+    /// So, we can perform test checks after different processing steps and look into interim state.
+    pub step: Option<usize>,
+    /// Expected messages in the message queue.
+    pub messages: Option<Vec<Message>>,
+    /// Expected allocations after program run.
+    pub allocations: Option<Vec<Allocations>>,
+    /// Expected data to be in the memory.
+    pub memory: Option<Vec<BytesAt>>,
+    /// Expected messages in the log.
+    pub log: Option<Vec<Message>>,
+    /// Flag, which points that errors are allowed. Could be used to check traps.
+    #[serde(rename = "allowError")]
+    pub allow_error: Option<bool>,
+    /// Expected active programs (not failed in the init) ids
+    #[serde(rename = "programs")]
+    pub active_programs: Option<Vec<OldAddress>>,
 }
 
 /// Data describing program being tested.
@@ -115,6 +156,16 @@ pub struct Fixture {
     pub messages: Vec<Message>,
     /// Expected results of the test run.
     pub expected: Vec<Expectation>,
+}
+
+#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
+pub struct OldFixture {
+    /// Fixture title
+    pub title: String,
+    /// Messages being sent to programs, defined in the test
+    pub messages: Vec<Message>,
+    /// Expected results of the test run.
+    pub expected: Vec<OldExpectation>,
 }
 
 /// Payload data types being used in messages.
@@ -225,6 +276,46 @@ pub struct Test {
     pub programs: Vec<Program>,
     /// A set of messages and expected results of running them in the context of defined [programs](todo-field-ref).
     pub fixtures: Vec<Fixture>,
+}
+
+#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
+pub struct OldTest {
+    /// Code that are needed to be submitted for tests
+    pub codes: Option<Vec<Code>>,
+    /// Programs and related data used for tests
+    pub programs: Vec<Program>,
+    /// A set of messages and expected results of running them in the context of defined [programs](todo-field-ref).
+    pub fixtures: Vec<OldFixture>,
+}
+
+impl OldTest {
+    pub fn to_new(self) -> anyhow::Result<Test> {
+        Ok(Test  {
+            codes: self.codes,
+            programs: self.programs,
+            fixtures: self.fixtures.into_iter().map(|f| {
+                Fixture {
+                    title: f.title,
+                    messages: f.messages,
+                    expected: f.expected.into_iter().map(|e| {
+                        Expectation {
+                            step: e.step,
+                            messages: e.messages,
+                            allocations: e.allocations,
+                            memory: e.memory,
+                            log: e.log,
+                            allow_error: e.allow_error,
+                            active_programs: e.active_programs.map(|programs| {
+                                programs.into_iter().map(|address| {
+                                    ChainProgram { address: address.to_new(), terminated: None }
+                                }).collect()
+                            }),
+                        }
+                    }).collect(),
+                }
+            }).collect(),
+        })
+    }
 }
 
 /// get path to meta wasm file.
